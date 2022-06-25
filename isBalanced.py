@@ -39,41 +39,59 @@ class Solution:
     def __init__(self):
         self.ans = True
 
-    def solve(self, root: TreeNode) -> int:
-        if root is not None and self.ans == True:
-            left_depth = self.solve(root.left)
-            right_depth = self.solve(root.right)
-            if abs(left_depth - right_depth) > 1:
-                self.ans = False
-            return 1 + max(left_depth, right_depth)
-        return 0
+    def get_height(self, root: TreeNode) -> int:
+        if root is None:
+            return 0
+
+        left_height = self.get_height(root.left)
+        if left_height == -1:
+            return -1
+        right_height = self.get_height(root.right)
+        if right_height == -1:
+            return -1
+
+        if abs(left_height - right_height) >= 2:
+            return -1
+        return max(left_height, right_height) + 1
 
     def isBalanced(self, root: TreeNode) -> bool:
-        self.ans = True
-        self.solve(root)
-        return self.ans
+        if root is None:
+            return True
+
+        left_height = self.get_height(root.left)
+        right_height = self.get_height(root.right)
+        
+        if abs(left_height - right_height) >= 2:
+            return False
+        if left_height == -1:
+            return False
+        if right_height == -1:
+            return False
+        return True
+        
+
 
 
 solution = Solution()
 
 root_a = TreeNode(None)
 root_a.direct_insert_multi([3, 9, 20, None, None, 15, 7])
-solution.isBalanced(root_a).should.equal(True)
+solution.isBalanced(root_a).should.equal(True, 'wrong 1')
 
 root_b = TreeNode(None)
 root_b.direct_insert_multi([1, None, 3, 2])
-solution.isBalanced(root_b).should.equal(False)
+solution.isBalanced(root_b).should.equal(False, 'wrong 2')
 
 root_c = TreeNode(None)
-root_c.direct_insert_multi([1, 2, 2, 3, None, None, 3, 4, None, None, 4])
-solution.isBalanced(root_c).should.equal(False)
+root_c.direct_insert_multi([1, 2, 2, 3, 3, None, None, 4, 4])
+solution.isBalanced(root_c).should.equal(False, 'wrong 3')
 
 root_d = TreeNode(None)
 root_d.direct_insert_multi(
     [1, 2, 3, 4, 5, None, 6, 7, None, None, None, None, 8])
-solution.isBalanced(root_d).should.equal(False)
+solution.isBalanced(root_d).should.equal(False, 'wrong 4')
 
 root_e = TreeNode(None)
 root_e.direct_insert_multi(
     [1, 2, 2, 3, 3, None, None, 4, 4])
-solution.isBalanced(root_e).should.equal(False)
+solution.isBalanced(root_e).should.equal(False, 'wrong 5')
